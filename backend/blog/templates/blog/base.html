@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Social Network</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f2f5;
+        }
+        /* Header */
+        .header {
+            background-color: #4267B2;
+            color: white;
+            padding: 10px 0;
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        /* Navbar */
+        .navbar {
+            background-color: #3b5998;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .navbar ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+        }
+        .navbar ul li {
+            margin: 0 15px;
+        }
+        .navbar ul li a {
+            color: white;
+            text-decoration: none;
+            font-size: 18px;
+        }
+        .navbar ul li a:hover {
+            text-decoration: underline;
+        }
+        .auth-buttons {
+            display: flex;
+        }
+        .auth-buttons button {
+            background-color: white;
+            color: #4267B2;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            margin-left: 10px;
+            cursor: pointer;
+        }
+        .auth-buttons button:hover {
+            background-color: #ddd;
+        }
+        /* Content */
+        .container {
+            width: 60%;
+            margin: 20px auto;
+        }
+        /* Modal */
+        .modal {
+            display: none; 
+            position: fixed; 
+            z-index: 1; 
+            left: 0;
+            top: 0;
+            width: 100%; 
+            height: 100%; 
+            overflow: auto; 
+            background-color: rgb(0,0,0); 
+            background-color: rgba(0,0,0,0.4); 
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto; 
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%; 
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        form {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            width: 50%;
+            margin: 0 auto;
+        }
+        label {
+            display: block;
+            margin: 10px 20px 5px;
+            font-weight: bold;
+        }
+        input[type="text"], textarea {
+            width: 92%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin: 20px;
+        }
+        textarea {
+            height: 200px;
+            margin: 20px;
+
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <div class="header">
+        Việt Nam Post Like
+    </div>
+
+    <!-- Navbar -->
+    <div class="navbar">
+        <ul>
+            <li><a href="#">Bài viết</a></li>
+            <li><a href="#">Video</a></li>
+            <li><a href="#">Mọi người</a></li>
+        </ul>
+        <div class="auth-buttons">
+            {% if user.is_authenticated %}
+                <span style="color: white;">Welcome, {{ user.username }}!</span>
+                <button id="createPostBtn">Tạo bài viết mới</button>
+                <a href="{% url 'login' %}"><button>Logout</button></a>
+            {% else %}
+                <a href="{% url 'login' %}"><button>Login</button></a>
+                <a href="{% url 'register' %}"><button>Sign Up</button></a>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Content -->
+    <div class="container">
+        {% block content %} {% endblock content %}
+    </div>
+
+    <!-- The Modal -->
+    <div id="createPostModal" class="modal">
+        <div class="modal-content">
+            <span class="close" id="closeModal">&times;</span>
+            <h1>Create or Edit Post</h1>
+            <form method="POST" action="" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div>
+                    <label for="title">Title:</label>
+                    {{ form.title }}
+                </div>
+                <div>
+                    <label for="">images</label>
+                    {{form.image}}
+                </div>
+                <div>
+                    <label for="content">Content (Markdown):</label>
+                    {{ form.content }}
+                </div>
+                <button type="submit" name="create_post">Submit</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Get the modal
+        var modal = document.getElementById("createPostModal");
+
+        // Get the button that opens the modal
+        var btn = document.getElementById("createPostBtn");
+
+        // Get the <span> element that closes the modal
+        var span = document.getElementById("closeModal");
+
+        // When the user clicks the button, open the modal 
+        btn.onclick = function() {
+            modal.style.display = "block";
+        }
+
+        // When the user clicks on <span> (x), close the modal
+        span.onclick = function() {
+            modal.style.display = "none";
+        }
+
+        // When the user clicks anywhere outside of the modal, close it
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+    </script>
+
+</body>
+</html>

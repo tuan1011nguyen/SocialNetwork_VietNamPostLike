@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog Posts</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f2f5;
+        }
+
+        /* Container */
+        .container {
+            width: 80%;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Media Section */
+        .media {
+            display: flex;
+            padding: 15px;
+            border-bottom: 1px solid #eaeaea;
+        }
+
+        .media:last-child {
+            border-bottom: none; /* Remove border for last item */
+        }
+
+        .article-img {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            margin-right: 15px;
+            object-fit: cover; /* Ensures the image covers the circle */
+        }
+
+        /* Article Body */
+        .media-body {
+            flex: 1; /* Allow the body to take remaining space */
+        }
+
+        .article-metadata {
+            font-size: 14px;
+            color: #555;
+            margin-bottom: 5px;
+        }
+
+        .article-title {
+            font-size: 20px;
+            color: #333;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .article-title:hover {
+            color: #4267B2; /* Change color on hover */
+        }
+
+        .article-content {
+            margin-top: 10px;
+            font-size: 16px;
+            line-height: 1.5;
+            color: #666;
+        }
+
+        /* Empty Message */
+        .empty-message {
+            text-align: center;
+            font-size: 18px;
+            color: #888;
+            margin-top: 20px;
+        }
+        img {
+            width: 300px;
+        }
+    </style>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+
+{% extends 'blog/base.html' %}
+
+{% block content %}
+    <div class="container">
+        {% for post in posts %}
+        <article class="media content-section">
+            <!-- Hiển thị hình ảnh đại diện của tác giả -->
+            <img class="rounded-circle article-img" src="{{ post.author.profile.image.url }}" alt="{{ post.author.username }}">
+            
+            <!-- Thông tin bài đăng -->
+            <div class="media-body">
+                <div class="article-metadata">
+                    <!-- <p>Post ID: {{ post.id|default:"Unknown" }}</p> -->
+                    <a class="mr-2" href="#">@{{ post.author }}</a>
+                    <small class="text-muted">{{ post.date_post }}</small>
+                </div>
+                
+                <!-- Tiêu đề bài đăng -->
+                <h2>
+                    <a class="article-title" href="">{{ post.title }}</a>
+                </h2>
+                
+                <!-- Nội dung bài đăng -->
+                <p class="article-content">{{ post.content }}</p>
+
+                <img src="{{post.image.url}}" alt="">
+            </div>
+
+            <div class="like_cmt_share">
+                <a href="/like-post?post_id={{post.id}}">
+
+                    <button class="like" onclick="likePost('{{ post.id }}')">
+                        <i class="fa-regular fa-thumbs-up"></i> {{ post.no_of_likes }}
+                    </button>   
+                </a>  
+                <h2>Comments:</h2>
+
+                {% for comment in post.comments.all %}
+                    <div>
+                        <strong>{{ comment.author.username }}</strong>:
+                        <p>{{ comment.content_cmt }}</p>
+                        <small>{{ comment.date_cmt }}</small>
+                    </div>
+                {% empty %}
+                    <p>No comments yet. Be the first to comment!</p>
+                {% endfor %}
+
+                <form method="POST">
+                    {% csrf_token %}
+                    {{ comment_form.as_p }}
+                    <button type="submit" name="comment_post_id" value="{{ post.id }}">Submit Comment</button>
+                </form>
+                              
+            </div>       
+        </article>
+        <br>
+        {% empty %}
+            <p class="empty-message">No posts available.</p>
+        {% endfor %}
+    </div>
+{% endblock content %}
+
+</body>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        window.likePost = function(postId) {
+            const url = `/?post_id=${postId}`;
+            fetch(url, {
+                method: 'GET',
+                credentials: 'include'
+            })
+            .then(response => {
+                if (response.redirected) {
+                    window.location.href = response.url;
+                }
+                console.log("Like action processed.");
+            })
+            .catch(error => console.error('Error:', error));
+        };
+    });
+</script>
+
+    
+</html>
