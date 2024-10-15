@@ -133,7 +133,13 @@
                     <p class="article-content">{{ post.content }}</p>
                 </h2>
                 
+                {% if post.image %}
                 <img src="{{ post.image.url }}" alt="Post Image">
+                {% else %}
+                    <p></p>
+                {% endif %}
+            
+
 
 
 

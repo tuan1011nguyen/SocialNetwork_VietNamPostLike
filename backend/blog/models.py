@@ -10,10 +10,11 @@ class Post(models.Model):
     image = models.ImageField(upload_to='post_images/', blank=True, null=True)
     date_post = models.DateTimeField(default=timezone.now)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
-    no_of_likes = models.IntegerField(default=0)  # Rename this field
+    no_of_likes = models.IntegerField(default=0)
 
     def __str__(self):
         return f'{self.title} by {self.author.username} on {self.date_post.strftime("%Y-%m-%d")}'
+
 
     
 class Like(models.Model):

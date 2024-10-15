@@ -32,7 +32,6 @@ def home(request):
                 post.author = request.user
                 post.save()
                 messages.success(request, 'Post created successfully.')
-                print(post.image.url)
                 return redirect('home')
 
         elif 'comment_post_id' in request.POST:
