@@ -1,1 +1,1 @@
-![Ảnh chụp màn hình](Screenshots/Screenshot2024-10-15.png)
+[![Demo dự án Social Network thực hiện với Django](https://img.youtube.com/vi/Hr7K_9GChuI/0.jpg)](https://www.youtube.com/watch?v=Hr7K_9GChuI)
